@@ -48,18 +48,21 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         <p className="text-xl font-bold text-primary mb-4">{formatPrice(product.price)}</p>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          {/* View Details: hidden on small screens */}
           <Link
             href={`/product/${product.id}`}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors"
+            className="hidden sm:flex flex-1 items-center justify-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors"
           >
             <Eye className="w-4 h-4" />
             <span className="text-sm">View Details</span>
           </Link>
+
+          {/* Add to Cart: always visible */}
           <button
             onClick={handleAddToCart}
             disabled={isAdding}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             <ShoppingCart className="w-4 h-4" />
             <span className="text-sm">{isAdding ? "Added!" : "Add"}</span>

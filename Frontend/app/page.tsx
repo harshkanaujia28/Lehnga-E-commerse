@@ -9,7 +9,6 @@ import { ProductCard } from "@/components/product-card"
 import { getProducts } from "@/lib/storage"
 import { useEffect, useState } from "react"
 import type { Product } from "@/lib/types"
-import { Sparkles } from "lucide-react"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { NewArrivals } from "@/components/NewArrivals"
@@ -17,20 +16,11 @@ import { OurCollection } from "@/components/ourcollection"
 import WhyUs from "@/components/whyus"
 import { TrendingNow } from "@/components/trendingnow"
 
-
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string>("All")
 
-  useEffect(() => {
-    setProducts(getProducts())
-
-    const handleProductsUpdate = () => {
-      setProducts(getProducts())
-    }
-
-    window.addEventListener("productsUpdated", handleProductsUpdate)
-    return () => window.removeEventListener("productsUpdated", handleProductsUpdate)
-  }, [])
   const heroImages = [
     "/Lehnga_ size 1.jpg",
     "/kjhdfj.jpg",
@@ -38,16 +28,34 @@ export default function HomePage() {
     "/hero-lehenga.jpg",
     "/jhdujszj.jpg",
   ]
+
   const categories = [
-    { name: "Bridal", image: "/Bridal/367717c8-f430-48ac-ba23-ce0040c66e01.jpeg", href: "/category/bridal" },
-    { name: "Wedding", image: "/wedding/62bf0ac7-b7ce-4fef-92da-c57e74c0543e.jpeg", href: "/category/wedding" },
-    { name: "Engagement", image: "/engagement/51ee17f3-fe13-4703-82d5-2409fde58802.jpeg", href: "/category/engagement" },
-    { name: "Reception", image: "/reception/….jpeg", href: "/category/reception" },
-    { name: "Sangeet", image: "/sangeet/568ca7db-8ba7-485e-abe3-8ff8a2279772.jpeg", href: "/category/sangeet" },
-    { name: "Mehendi", image: "/sangeet/Made to Order_Measurement_Custom Order Lehenga….jpeg", href: "/category/mehendi" },
-    { name: "Kurtis", image: "/kurtis/24dfbed1-4cf2-4e67-b50f-1eda24d22ac4.jpeg", href: "/category/kurtis" }, // extra
-    { name: "Suits", image: "/kurtis/Slik Floral Embroidered V-Neck Straight Kurta with….jpeg", href: "/category/suits" },     // extra
-  ];
+    { name: "All", image: "/Bridal/0bd77faf-fb9f-4966-9c81-2041ba25a1a9.jpeg" },
+    { name: "Bridal", image: "/Bridal/367717c8-f430-48ac-ba23-ce0040c66e01.jpeg" },
+    { name: "Wedding", image: "/wedding/62bf0ac7-b7ce-4fef-92da-c57e74c0543e.jpeg" },
+    { name: "Engagement", image: "/engagement/51ee17f3-fe13-4703-82d5-2409fde58802.jpeg" },
+    { name: "Reception", image: "/reception/….jpeg" },
+    { name: "Sangeet", image: "/sangeet/568ca7db-8ba7-485e-abe3-8ff8a2279772.jpeg" },
+    { name: "Mehendi", image: "/sangeet/Made to Order_Measurement_Custom Order Lehenga….jpeg" },
+    { name: "Kurtis", image: "/kurtis/24dfbed1-4cf2-4e67-b50f-1eda24d22ac4.jpeg" },
+    { name: "Suits", image: "/kurtis/Slik Floral Embroidered V-Neck Straight Kurta with….jpeg" },
+  ]
+
+  useEffect(() => {
+    const allProducts = getProducts()
+    setProducts(allProducts)
+    setFilteredProducts(allProducts)
+
+    const handleProductsUpdate = () => {
+      const updated = getProducts()
+      setProducts(updated)
+      setFilteredProducts(updated)
+    }
+
+    window.addEventListener("productsUpdated", handleProductsUpdate)
+    return () => window.removeEventListener("productsUpdated", handleProductsUpdate)
+  }, [])
+
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -60,6 +68,15 @@ export default function HomePage() {
     arrows: false,
     pauseOnHover: false,
   }
+
+  const handleCategoryClick = (categoryName: string) => {
+    setSelectedCategory(categoryName)
+    const filtered = categoryName === "All"
+      ? products
+      : products.filter((p) => p.category === categoryName)
+    setFilteredProducts(filtered)
+  }
+
   return (
     <>
       <Navbar />
@@ -74,63 +91,38 @@ export default function HomePage() {
                   alt={`Lehenga ${i + 1}`}
                   fill
                   priority={i === 0}
-                  className="object-cover w-full h-full "
+                  className="object-cover w-full h-full"
                 />
               </div>
             ))}
           </Slider>
-
-          {/* Content Overlay */}
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-center px-4 z-10">
-            {/* <div className="max-w-3xl text-white">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-              Exquisite Indian{" "}
-              <span className="text-red-400 block">Wedding Lehengas</span>
-            </h1>
-            <p className="text-lg lg:text-xl text-gray-200 mb-8 leading-relaxed">
-              Discover our curated collection of traditional and contemporary lehengas from India's finest designers.
-              Perfect for weddings, engagements, and special celebrations.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 px-8" asChild>
-                <Link href="/products">
-                  <ShoppingBag className="mr-2 h-5 w-5" />
-                  Shop Collection
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="px-8 text-white border-white hover:bg-white/10" asChild>
-                <Link href="/vendors">
-                  <Users className="mr-2 h-5 w-5" />
-                  Explore Designers
-                </Link>
-              </Button>
-            </div>
-          </div> */}
+            {/* Optional overlay content */}
           </div>
         </section>
+
+        {/* Shop by Occasion */}
         <section className="py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
               Shop by Occasion
             </h2>
 
-            <div className="flex flex-wrap justify-center gap-12">
+            <div className="flex gap-6 overflow-x-auto py-2 px-2 -mx-2 sm:justify-center sm:flex-wrap sm:overflow-visible scrollbar-none">
               {categories.map((category) => (
                 <Link
                   key={category.name}
-                  href={category.href}
-                  className="flex flex-col items-center group"
+                  href={`/product?category=${category.name}`}
+                  className="flex-shrink-0 w-32 sm:w-28 flex flex-col items-center group relative transition-transform duration-300 hover:scale-105"
                 >
-                  <div className="w-28 h-28 rounded-full overflow-hidden border border-gray-200 shadow-md group-hover:scale-105 transition-transform duration-300">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={112} // w-28 = 112px
-                      height={112}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-28 h-28 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-gray-200 shadow-md bg-gray-50 relative">
+                    {category.image ? (
+                      <Image src={category.image} alt={category.name} fill className="object-cover" />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-700 font-semibold">All</div>
+                    )}
                   </div>
-                  <span className="mt-2 text-lg font-medium text-gray-800 text-center">
+                  <span className="mt-3 text-lg font-medium text-gray-800 text-center group-hover:text-primary transition-colors">
                     {category.name}
                   </span>
                 </Link>
@@ -139,7 +131,25 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Products Section */}
+        {/* Filtered Products */}
+        {/* <section className="py-12 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
+              {selectedCategory} Collection
+            </h2>
+            {filteredProducts.length === 0 ? (
+              <p className="text-center text-muted-foreground">No products available in this category.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section> */}
+
+        {/* Other Sections */}
         <NewArrivals products={products} />
         <OurCollection
           description="Explore our curated selection of lehengas for weddings, festivals, and special occasions."

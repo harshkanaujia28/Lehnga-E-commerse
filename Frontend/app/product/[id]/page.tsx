@@ -10,7 +10,9 @@ import Image from "next/image"
 import { ShoppingCart, ArrowLeft, Tag, Palette, Star } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { TrendingNow } from "@/components/trendingnow"
+import { initialProducts } from "@/lib/initial-products"
+
+import { ProductCard } from "@/components/product-card"
 
 interface Review {
   id: number
@@ -30,6 +32,11 @@ export default function ProductDetailPage() {
   const [products, setProducts] = useState<Product[]>([])
 
   const availableSizes = ["XS", "S", "M", "L", "XL"]
+
+  useEffect(() => {
+    setProducts(initialProducts)
+  }, [])
+
 
   useEffect(() => {
     const id = params.id as string
@@ -132,8 +139,8 @@ export default function ProductDetailPage() {
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={`px-4 py-2 border rounded-lg font-medium transition-colors ${selectedSize === size
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-white text-foreground border-gray-300 hover:bg-gray-100"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-white text-foreground border-gray-300 hover:bg-gray-100"
                       }`}
                   >
                     {size}
@@ -209,7 +216,27 @@ export default function ProductDetailPage() {
           )}
         </div>
       </main>
-      <TrendingNow products={products} viewMoreLink="/product" />
+      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="text-center mb-12">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Recommended For You</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
+            Each lehenga is a masterpiece, crafted with love and attention to detail for your most cherished moments.
+          </p>
+        </div>
+
+        {products.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No products available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {products.slice(22, 30).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </section>
+
       <Footer />
     </>
   )

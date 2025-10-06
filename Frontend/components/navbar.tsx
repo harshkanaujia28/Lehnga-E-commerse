@@ -88,12 +88,12 @@ export function Navbar() {
             >
               All Lehengas
             </Link>
-            <Link
+            {/* <Link
               href="/kurti"
               className="px-4 py-1.5  text-gray-700 text-sm font-medium rounded-full  transition"
             >
               Suits
-            </Link>
+            </Link> */}
 
             {/* Search Box */}
             <form
