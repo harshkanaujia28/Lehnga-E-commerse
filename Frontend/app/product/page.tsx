@@ -20,9 +20,14 @@ export default function AllProductsPage() {
   const [showNew, setShowNew] = useState<boolean>(false)
   const [products] = useState<Product[]>(initialProducts)
 
-  // Unique categories and colors
+  // Get unique categories and colors
   const categories = Array.from(new Set(products.map(p => p.category))).sort()
   const colors = Array.from(new Set(products.map(p => p.color))).sort()
+
+  // Update selectedCategory if URL changes
+  useEffect(() => {
+    setSelectedCategory(categoryParam)
+  }, [categoryParam])
 
   // Filtered and sorted products
   const filteredProducts = useMemo(() => {
@@ -31,7 +36,7 @@ export default function AllProductsPage() {
       const colorMatch = selectedColor === "All" || p.color === selectedColor
       const minMatch = minPrice === "" || p.price >= minPrice
       const maxMatch = maxPrice === "" || p.price <= maxPrice
-      const newMatch = !showNew || idx >= products.length - 5
+      const newMatch = !showNew || idx >= products.length - 5 // last 5 as new arrivals
       return categoryMatch && colorMatch && minMatch && maxMatch && newMatch
     })
 
@@ -40,11 +45,6 @@ export default function AllProductsPage() {
 
     return result
   }, [products, selectedCategory, selectedColor, minPrice, maxPrice, showNew, sortOption])
-
-  // Update selectedCategory if URL changes
-  useEffect(() => {
-    setSelectedCategory(categoryParam)
-  }, [categoryParam])
 
   return (
     <>
