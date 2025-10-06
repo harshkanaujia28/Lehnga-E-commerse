@@ -10,6 +10,7 @@ import Image from "next/image"
 import { ShoppingCart, ArrowLeft, Tag, Palette, Star } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
+import { TrendingNow } from "@/components/trendingnow"
 
 interface Review {
   id: number
@@ -208,6 +209,7 @@ export default function ProductDetailPage() {
           )}
         </div>
       </main>
+       <TrendingNow products={products} viewMoreLink="/product" />
       <Footer />
     </>
   )
