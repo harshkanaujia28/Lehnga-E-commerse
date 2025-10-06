@@ -29,7 +29,7 @@ export default function HomePage() {
     "/jhdujszj.jpg",
   ]
 
-  const categories = [
+   const categories = [
     { name: "All", image: "/Bridal/0bd77faf-fb9f-4966-9c81-2041ba25a1a9.jpeg" },
     { name: "Bridal", image: "/Bridal/367717c8-f430-48ac-ba23-ce0040c66e01.jpeg" },
     { name: "Wedding", image: "/wedding/62bf0ac7-b7ce-4fef-92da-c57e74c0543e.jpeg" },
@@ -130,7 +130,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
         {/* Filtered Products */}
         {/* <section className="py-12 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
