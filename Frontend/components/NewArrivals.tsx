@@ -16,6 +16,7 @@ interface NewArrivalsProps {
 }
 
 export function NewArrivals({ products }: NewArrivalsProps) {
+  
   return (
     <section
       id="new-arrivals"

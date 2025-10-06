@@ -27,6 +27,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
   const [reviews, setReviews] = useState<Review[]>([])
+  const [products, setProducts] = useState<Product[]>([])
 
   const availableSizes = ["XS", "S", "M", "L", "XL"]
 
@@ -130,11 +131,10 @@ export default function ProductDetailPage() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 border rounded-lg font-medium transition-colors ${
-                      selectedSize === size
+                    className={`px-4 py-2 border rounded-lg font-medium transition-colors ${selectedSize === size
                         ? "bg-primary text-primary-foreground border-primary"
                         : "bg-white text-foreground border-gray-300 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {size}
                   </button>
@@ -209,7 +209,7 @@ export default function ProductDetailPage() {
           )}
         </div>
       </main>
-       <TrendingNow products={products} viewMoreLink="/product" />
+      <TrendingNow products={products} viewMoreLink="/product" />
       <Footer />
     </>
   )
