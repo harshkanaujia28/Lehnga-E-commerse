@@ -1,5 +1,10 @@
+import { Suspense } from "react"
 import AllProductsPage from "@/components/AllProductsPage"
 
 export default function ProductPage() {
-  return <AllProductsPage />
+  return (
+    <Suspense fallback={<p>Loading products...</p>}>
+      <AllProductsPage />
+    </Suspense>
+  )
 }
