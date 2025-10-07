@@ -113,6 +113,8 @@ export default function HomePage() {
           products={products}
           viewMoreLink="/product"
         />
+
+        
         <section className="py-12 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-center text-gray-800 mb-4">
