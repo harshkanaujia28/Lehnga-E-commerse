@@ -6,7 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
-import { getProducts } from "@/lib/storage"
+import { initialProducts } from "@/lib/initial-products" // ✅ Import initialProducts directly
 import { useEffect, useState } from "react"
 import type { Product } from "@/lib/types"
 import "slick-carousel/slick/slick.css"
@@ -18,8 +18,6 @@ import { TrendingNow } from "@/components/trendingnow"
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([])
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>("All")
 
   const heroImages = [
     "/Lehnga_ size 1.jpg",
@@ -42,18 +40,8 @@ export default function HomePage() {
   ]
 
   useEffect(() => {
-    const allProducts = getProducts()
-    setProducts(allProducts)
-    setFilteredProducts(allProducts)
-
-    const handleProductsUpdate = () => {
-      const updated = getProducts()
-      setProducts(updated)
-      setFilteredProducts(updated)
-    }
-
-    window.addEventListener("productsUpdated", handleProductsUpdate)
-    return () => window.removeEventListener("productsUpdated", handleProductsUpdate)
+    // ✅ Directly set initialProducts
+    setProducts(initialProducts)
   }, [])
 
   const sliderSettings = {
@@ -67,14 +55,6 @@ export default function HomePage() {
     slidesToScroll: 1,
     arrows: false,
     pauseOnHover: false,
-  }
-
-  const handleCategoryClick = (categoryName: string) => {
-    setSelectedCategory(categoryName)
-    const filtered = categoryName === "All"
-      ? products
-      : products.filter((p) => p.category === categoryName)
-    setFilteredProducts(filtered)
   }
 
   return (
@@ -96,9 +76,7 @@ export default function HomePage() {
               </div>
             ))}
           </Slider>
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-center px-4 z-10">
-            {/* Optional overlay content */}
-          </div>
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-center px-4 z-10" />
         </section>
 
         {/* Shop by Occasion */}
@@ -107,7 +85,6 @@ export default function HomePage() {
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
               Shop by Occasion
             </h2>
-
             <div className="flex gap-6 overflow-x-auto py-2 px-2 -mx-2 sm:justify-center sm:flex-wrap sm:overflow-visible scrollbar-none">
               {categories.map((category) => (
                 <Link
@@ -130,32 +107,44 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* Filtered Products */}
-        {/* <section className="py-12 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
-              {selectedCategory} Collection
-            </h2>
-            {filteredProducts.length === 0 ? (
-              <p className="text-center text-muted-foreground">No products available in this category.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            )}
-          </div>
-        </section> */}
-
-        {/* Other Sections */}
         <NewArrivals products={products} />
         <OurCollection
           description="Explore our curated selection of lehengas for weddings, festivals, and special occasions."
           products={products}
           viewMoreLink="/product"
         />
+        <section className="py-12 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-center text-gray-800 mb-4">
+              Women Suits Collection
+            </h2>
+            <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
+              Elegant and stylish suits designed for every occasion — from festive wear to casual elegance.
+            </p>
+
+            {products.filter((p) => p.category === "Suits").length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {products
+                  .filter((p) => p.category === "Suits")
+                  .slice(0, 8)
+                  .map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500">No suits available.</p>
+            )}
+
+            <div className="flex justify-center mt-10">
+              <Link
+                href="/product?category=Suits"
+                className="px-6 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-pink-700 transition"
+              >
+                View All Suits
+              </Link>
+            </div>
+          </div>
+        </section>
         <WhyUs />
         <TrendingNow products={products} viewMoreLink="/product" />
       </main>

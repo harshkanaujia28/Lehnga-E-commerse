@@ -304,4 +304,105 @@ export const initialProducts: Product[] = [
     category: "Party",
     color: "Rose Gold",
   },
+    {
+    id: "31",
+    title: "Pastel Peach Anarkali Suit",
+    price: 2999,
+    image: "/kurtis/87591ec8-ed49-4a39-b0ca-95f05dc08252.jpeg",
+    description:
+      "Graceful pastel peach Anarkali suit crafted from georgette with delicate floral embroidery. Perfect for festive or semi-formal occasions.",
+    category: "Suits",
+    color: "Peach",
+  },
+  {
+    id: "32",
+    title: "Emerald Green Straight Kurta Set",
+    price: 2599,
+    image: "/suit/c7c87ae2-9885-49a3-b314-aacbc835fbfb.jpeg",
+    description:
+      "Elegant emerald green suit with zari work and matching dupatta. Ideal for festive gatherings and traditional wear.",
+    category: "Suits",
+    color: "Green",
+  },
+  {
+    id: "33",
+    title: "Royal Blue Embroidered Palazzo Suit",
+    price: 3299,
+    image: "/suit/e70ef690-4466-4706-8c11-4a4b5294f12f.jpeg",
+    description:
+      "Chic royal blue palazzo suit with thread and mirror work. Lightweight crepe fabric for effortless elegance.",
+    category: "Suits",
+    color: "Blue",
+  },
+  {
+    id: "34",
+    title: "Maroon Velvet Festive Suit Set",
+    price: 3799,
+    image: "/suit/Shop Teal Blue Velvet Embroidered Suit Set with Dupatta Online.jpeg",
+    description:
+      "Rich maroon velvet suit adorned with zardozi embroidery and lace detailing. Perfect for winter festivities.",
+    category: "Suits",
+    color: "Maroon",
+  },
+  {
+    id: "35",
+    title: "Ivory Chikankari Cotton Suit",
+    price: 2499,
+    image: "/suit/e92604c6-1b22-4b54-8a65-a98ac54e8e05.jpeg",
+    description:
+      "Classic ivory cotton suit featuring intricate chikankari hand embroidery. Breathable and elegant for daily wear.",
+    category: "Suits",
+    color: "White",
+  },
+  {
+    id: "36",
+    title: "Lavender Georgette Sharara Suit",
+    price: 3499,
+    image: "/suit/Buy Pakistani Sparkling Indian Sharara Suit for….jpeg",
+    description:
+      "Trendy lavender sharara suit with sequins and mirror embellishments. A perfect blend of modern and ethnic.",
+    category: "Suits",
+    color: "Lavender",
+  },
+  {
+    id: "37",
+    title: "Mustard Yellow Printed Cotton Suit",
+    price: 2199,
+    image: "/suit/b83f0c98-9095-4b52-bf5c-fde9f2337a84.jpeg",
+    description:
+      "Bright mustard yellow cotton suit with block print design. Comfortable and stylish for daily or festive use.",
+    category: "Suits",
+    color: "Yellow",
+  },
+  {
+    id: "38",
+    title: "Rose Pink Organza Suit Set",
+    price: 3199,
+    image: "/suit/b4ccc11e-a7ea-4735-9562-e15d3ba9ae4f.jpeg",
+    description:
+      "Elegant rose pink organza suit with light sequin detailing and dupatta. Perfect for festive occasions and weddings.",
+    category: "Suits",
+    color: "Pink",
+  },
+  {
+    id: "39",
+    title: "Teal Blue Embroidered Anarkali Suit",
+    price: 3699,
+    image: "/suit/2121c149-b7c1-4d73-a2ee-2464c30b7ada.jpeg",
+    description:
+      "Beautiful teal blue Anarkali suit with rich embroidery on the yoke and dupatta border. Ideal for weddings and parties.",
+    category: "Suits",
+    color: "Teal",
+  },
+  {
+    id: "40",
+    title: "Grey Silk Party Suit Set",
+    price: 3399,
+    image: "/kurtis/017be94a-21cd-4acd-9e42-dd25ca6e3991.jpeg",
+    description:
+      "Sophisticated grey silk suit with subtle zari work. Modern design for cocktail or evening functions.",
+    category: "Suits",
+    color: "Grey",
+  },
+
 ]

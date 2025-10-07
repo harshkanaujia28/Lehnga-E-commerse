@@ -2,7 +2,7 @@
 
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { getProductById, addToCart } from "@/lib/storage"
+import { addToCart } from "@/lib/storage"
 import { formatPrice } from "@/lib/format"
 import { useEffect, useState } from "react"
 import type { Product } from "@/lib/types"
@@ -11,7 +11,6 @@ import { ShoppingCart, ArrowLeft, Tag, Palette, Star } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { initialProducts } from "@/lib/initial-products"
-
 import { ProductCard } from "@/components/product-card"
 
 interface Review {
@@ -30,6 +29,7 @@ export default function ProductDetailPage() {
   const [isAdding, setIsAdding] = useState(false)
   const [reviews, setReviews] = useState<Review[]>([])
   const [products, setProducts] = useState<Product[]>([])
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
 
   const availableSizes = ["XS", "S", "M", "L", "XL"]
 
@@ -37,21 +37,31 @@ export default function ProductDetailPage() {
     setProducts(initialProducts)
   }, [])
 
-
   useEffect(() => {
     const id = params.id as string
-    const foundProduct = getProductById(id)
+    // ✅ Ensure we check all products including Suits
+    const foundProduct = initialProducts.find((p) => p.id === id)
     if (foundProduct) {
       setProduct(foundProduct)
     }
 
     // Mock reviews
     setReviews([
-      { id: 1, name: "Priya S.", rating: 5, comment: "Absolutely gorgeous lehenga! Fit was perfect." },
-      { id: 2, name: "Ananya K.", rating: 4, comment: "Beautiful embroidery and color. Loved it!" },
-      { id: 3, name: "Rohit M.", rating: 5, comment: "Bought this for my sister’s wedding. Stunning quality!" },
+      { id: 1, name: "Priya S.", rating: 5, comment: "Absolutely gorgeous!" },
+      { id: 2, name: "Ananya K.", rating: 4, comment: "Loved the color and fit." },
+      { id: 3, name: "Rohit M.", rating: 5, comment: "High quality and beautiful design." },
     ])
   }, [params.id])
+
+  // Related Products
+  useEffect(() => {
+    if (product && products.length > 0) {
+      const related = products.filter(
+        (p) => p.category === product.category && p.id !== product.id
+      )
+      setRelatedProducts(related.slice(0, 4))
+    }
+  }, [product, products])
 
   const handleAddToCart = () => {
     if (!product || !selectedSize) return
@@ -130,7 +140,7 @@ export default function ProductDetailPage() {
               <p className="text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Size Selector (buttons) */}
+            {/* Size Selector */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-foreground mb-2">Select Size</label>
               <div className="flex gap-2 flex-wrap">
@@ -138,10 +148,11 @@ export default function ProductDetailPage() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 border rounded-lg font-medium transition-colors ${selectedSize === size
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-white text-foreground border-gray-300 hover:bg-gray-100"
-                      }`}
+                    className={`px-4 py-2 border rounded-lg font-medium transition-colors ${
+                      selectedSize === size
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-white text-foreground border-gray-300 hover:bg-gray-100"
+                    }`}
                   >
                     {size}
                   </button>
@@ -184,7 +195,7 @@ export default function ProductDetailPage() {
               <h3 className="font-serif text-lg font-semibold mb-4">Product Details</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>• Handcrafted with premium materials</li>
-                <li>• Includes blouse and dupatta</li>
+                <li>• Includes matching pieces</li>
                 <li>• Custom sizing available</li>
                 <li>• Dry clean only</li>
               </ul>
@@ -192,7 +203,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Reviews Section */}
+        {/* Reviews */}
         <div className="mt-16">
           <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6">Customer Reviews</h2>
           {reviews.length === 0 ? (
@@ -216,22 +227,26 @@ export default function ProductDetailPage() {
           )}
         </div>
       </main>
+
+      {/* Related Products */}
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="text-center mb-12">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Recommended For You</h2>
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Related Products
+          </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Each lehenga is a masterpiece, crafted with love and attention to detail for your most cherished moments.
+            Discover more pieces that complement your style.
           </p>
         </div>
 
-        {products.length === 0 ? (
+        {relatedProducts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No products available at the moment.</p>
+            <p className="text-muted-foreground">No related products available.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.slice(22, 30).map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {relatedProducts.map((item) => (
+              <ProductCard key={item.id} product={item} />
             ))}
           </div>
         )}

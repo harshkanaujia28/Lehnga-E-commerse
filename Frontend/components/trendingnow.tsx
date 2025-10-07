@@ -39,7 +39,7 @@ export function TrendingNow({ products, viewMoreLink }: TrendingNowProps) {
               <div className="text-center mt-10">
                 <Link
                   href={viewMoreLink}
-                  className="inline-block px-6 py-2.5 bg-pink-600 text-white font-medium rounded-full hover:bg-pink-500 transition shadow-sm"
+                  className="inline-block px-6 py-2.5 bg-red-600 text-white font-medium rounded-full hover:bg-pink-500 transition shadow-sm"
                 >
                   View More
                 </Link>
