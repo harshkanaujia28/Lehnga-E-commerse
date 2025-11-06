@@ -1,14 +1,13 @@
 "use client"
 
 import type React from "react"
-
+import { useEffect, useState } from "react"
+import Image from "next/image"
 import { AdminLayout } from "@/components/admin-layout"
 import { getProducts, addProduct, updateProduct, deleteProduct } from "@/lib/storage"
 import { formatPrice } from "@/lib/format"
-import { useEffect, useState } from "react"
 import type { Product } from "@/lib/types"
 import { Plus, Edit, Trash2, Package, X } from "lucide-react"
-import Image from "next/image"
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -25,29 +24,16 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     loadProducts()
-
-    const handleProductsUpdate = () => {
-      loadProducts()
-    }
-
+    const handleProductsUpdate = () => loadProducts()
     window.addEventListener("productsUpdated", handleProductsUpdate)
     return () => window.removeEventListener("productsUpdated", handleProductsUpdate)
   }, [])
 
-  const loadProducts = () => {
-    setProducts(getProducts())
-  }
+  const loadProducts = () => setProducts(getProducts())
 
   const openAddModal = () => {
     setEditingProduct(null)
-    setFormData({
-      title: "",
-      price: "",
-      image: "",
-      description: "",
-      category: "",
-      color: "",
-    })
+    setFormData({ title: "", price: "", image: "", description: "", category: "", color: "" })
     setIsModalOpen(true)
   }
 
@@ -71,7 +57,6 @@ export default function AdminProductsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
     const productData: Product = {
       id: editingProduct?.id || `${Date.now()}`,
       title: formData.title,
@@ -81,20 +66,13 @@ export default function AdminProductsPage() {
       category: formData.category || undefined,
       color: formData.color || undefined,
     }
-
-    if (editingProduct) {
-      updateProduct(editingProduct.id, productData)
-    } else {
-      addProduct(productData)
-    }
-
+    if (editingProduct) updateProduct(editingProduct.id, productData)
+    else addProduct(productData)
     closeModal()
   }
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      deleteProduct(id)
-    }
+    if (confirm("Are you sure you want to delete this product?")) deleteProduct(id)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -108,7 +86,9 @@ export default function AdminProductsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">Products Management</h1>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
+              Products Management
+            </h1>
             <p className="text-muted-foreground">Add, edit, or remove products from your store</p>
           </div>
           <button
@@ -131,7 +111,7 @@ export default function AdminProductsPage() {
           <p className="text-3xl font-bold text-foreground">{products.length}</p>
         </div>
 
-        {/* Products Grid */}
+        {/* Products Table for desktop, Cards for mobile */}
         {products.length === 0 ? (
           <div className="bg-card border border-border rounded-lg p-12 text-center">
             <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -145,38 +125,88 @@ export default function AdminProductsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <div key={product.id} className="bg-card border border-border rounded-lg overflow-hidden">
-                <div className="relative aspect-[3/4] bg-muted">
-                  <Image src={product.image || "/placeholder.svg"} alt={product.title} fill className="object-cover" />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-serif text-lg font-semibold text-foreground mb-1 line-clamp-2">
-                    {product.title}
-                  </h3>
-                  {product.category && <p className="text-sm text-muted-foreground mb-2">{product.category}</p>}
-                  <p className="text-xl font-bold text-primary mb-4">{formatPrice(product.price)}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => openEditModal(product)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors"
-                    >
-                      <Edit className="w-4 h-4" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="flex items-center justify-center gap-2 px-3 py-2 bg-destructive/10 text-destructive font-medium rounded-lg hover:bg-destructive/20 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </button>
+          <>
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-card border border-border rounded-lg overflow-hidden">
+              <table className="w-full text-left">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="px-4 py-2 font-medium">Image</th>
+                    <th className="px-4 py-2 font-medium">Name</th>
+                    <th className="px-4 py-2 font-medium">Category</th>
+                    <th className="px-4 py-2 font-medium">Price</th>
+                    <th className="px-4 py-2 font-medium text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((product) => (
+                    <tr key={product.id} className="border-t border-border">
+                      <td className="px-4 py-2">
+                        <Image
+                          src={product.image || "/placeholder.svg"}
+                          alt={product.title}
+                          width={50}
+                          height={50}
+                          className="rounded-lg object-cover"
+                        />
+                      </td>
+                      <td className="px-4 py-2 font-medium">{product.title}</td>
+                      <td className="px-4 py-2">{product.category || "—"}</td>
+                      <td className="px-4 py-2">{formatPrice(product.price)}</td>
+                      <td className="px-4 py-2 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => openEditModal(product)}
+                            className="flex items-center justify-center gap-1 px-2 py-1 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+                          >
+                            <Edit className="w-4 h-4" /> Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="flex items-center justify-center gap-1 px-2 py-1 bg-destructive/10 text-destructive rounded-lg hover:bg-destructive/20 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" /> Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden grid grid-cols-1 gap-4">
+              {products.map((product) => (
+                <div key={product.id} className="bg-card border border-border rounded-lg overflow-hidden">
+                  <div className="relative aspect-[3/4] bg-muted">
+                    <Image src={product.image || "/placeholder.svg"} alt={product.title} fill className="object-cover" />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-1 line-clamp-2">
+                      {product.title}
+                    </h3>
+                    {product.category && <p className="text-sm text-muted-foreground mb-2">{product.category}</p>}
+                    <p className="text-xl font-bold text-primary mb-4">{formatPrice(product.price)}</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => openEditModal(product)}
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors"
+                      >
+                        <Edit className="w-4 h-4" /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="flex items-center justify-center gap-2 px-3 py-2 bg-destructive/10 text-destructive font-medium rounded-lg hover:bg-destructive/20 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" /> Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
@@ -188,16 +218,13 @@ export default function AdminProductsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between">
-              <h2 className="font-serif text-2xl font-semibold">
-                {editingProduct ? "Edit Product" : "Add New Product"}
-              </h2>
+              <h2 className="font-serif text-2xl font-semibold">{editingProduct ? "Edit Product" : "Add New Product"}</h2>
               <button onClick={closeModal} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
-              {/* Title */}
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-foreground mb-2">
                   Product Title *
@@ -213,8 +240,6 @@ export default function AdminProductsPage() {
                   required
                 />
               </div>
-
-              {/* Price */}
               <div>
                 <label htmlFor="price" className="block text-sm font-medium text-foreground mb-2">
                   Price (₹) *
@@ -232,8 +257,6 @@ export default function AdminProductsPage() {
                   required
                 />
               </div>
-
-              {/* Image URL */}
               <div>
                 <label htmlFor="image" className="block text-sm font-medium text-foreground mb-2">
                   Image URL *
@@ -252,8 +275,6 @@ export default function AdminProductsPage() {
                   Enter a direct URL to the product image (jpg, png, webp)
                 </p>
               </div>
-
-              {/* Category */}
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-foreground mb-2">
                   Category
@@ -268,8 +289,6 @@ export default function AdminProductsPage() {
                   placeholder="e.g., Bridal, Reception, Sangeet"
                 />
               </div>
-
-              {/* Color */}
               <div>
                 <label htmlFor="color" className="block text-sm font-medium text-foreground mb-2">
                   Color
@@ -284,8 +303,6 @@ export default function AdminProductsPage() {
                   placeholder="e.g., Red, Blue, Pink"
                 />
               </div>
-
-              {/* Description */}
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
                   Description *
@@ -301,8 +318,6 @@ export default function AdminProductsPage() {
                   required
                 />
               </div>
-
-              {/* Submit Button */}
               <div className="flex gap-3 pt-4">
                 <button
                   type="button"

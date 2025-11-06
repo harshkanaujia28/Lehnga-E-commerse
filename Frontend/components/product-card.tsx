@@ -1,10 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingCart, Eye } from "lucide-react"
+import { ShoppingCart, Eye, Star } from "lucide-react"
 import type { Product } from "@/lib/types"
 import { formatPrice } from "@/lib/format"
 import { addToCart } from "@/lib/storage"
@@ -24,9 +23,14 @@ export function ProductCard({ product }: ProductCardProps) {
     setTimeout(() => setIsAdding(false), 1000)
   }
 
+  // Dummy review data for demo
+  const averageRating = product.rating?.average || 4.2
+  const reviewCount = product.rating?.count || 12
+
   return (
-    <div className="group bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
-      <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-muted">
+    <div className="group bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300">
+      {/* Product Image */}
+      <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-gray-50">
         <Image
           src={product.image || "/placeholder.svg"}
           alt={product.title}
@@ -34,40 +38,46 @@ export function ProductCard({ product }: ProductCardProps) {
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         {product.category && (
-          <span className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm text-foreground text-xs font-medium px-3 py-1 rounded-full">
+          <span className="absolute top-3 left-3 bg-white/70 backdrop-blur-sm text-gray-800 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
             {product.category}
           </span>
         )}
       </Link>
 
-      <div className="p-4">
+      {/* Product Info */}
+      <div className="p-4 flex flex-col justify-between h-32">
         <Link href={`/product/${product.id}`}>
-          <h3 className="font-serif text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="font-serif text-sm font-semibold text-gray-900 mb-1 group-hover:text-pink-600 transition-colors line-clamp-2">
             {product.title}
           </h3>
         </Link>
-        <p className="text-xl font-bold text-primary mb-4">{formatPrice(product.price)}</p>
 
-        <div className="flex gap-2 flex-wrap">
-          {/* View Details: hidden on small screens */}
-          <Link
-            href={`/product/${product.id}`}
-            className="hidden sm:flex flex-1 items-center justify-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors"
-          >
-            <Eye className="w-4 h-4" />
-            <span className="text-sm">View Details</span>
-          </Link>
+        {/* Rating */}
+        <div className="flex items-center mb-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className={`w-4 h-4 ${
+                i < Math.round(averageRating) ? "text-yellow-400" : "text-gray-300"
+              }`}
+            />
+          ))}
+          <span className="text-gray-500 text-sm ml-2">({reviewCount})</span>
+        </div>
 
-          {/* Add to Cart: always visible */}
+        <p className="text-xl font-bold text-red-600 mb-4">{formatPrice(product.price)}</p>
+
+        {/* <div className="flex gap-2 flex-wrap">
+          Add to Cart button
           <button
             onClick={handleAddToCart}
             disabled={isAdding}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-500 transition-colors disabled:opacity-50"
           >
             <ShoppingCart className="w-4 h-4" />
             <span className="text-sm">{isAdding ? "Added!" : "Add"}</span>
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   )

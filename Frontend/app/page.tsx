@@ -1,31 +1,27 @@
 "use client"
 
-import { Navbar } from "@/components/navbar"
-import Slider from "react-slick"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Footer } from "@/components/footer"
-import { ProductCard } from "@/components/product-card"
-import { initialProducts } from "@/lib/initial-products" // ✅ Import initialProducts directly
-import { useEffect, useState } from "react"
-import type { Product } from "@/lib/types"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
+
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
+import { ProductCard } from "@/components/product-card"
+import { initialProducts } from "@/lib/initial-products"
 import { NewArrivals } from "@/components/NewArrivals"
 import { OurCollection } from "@/components/ourcollection"
 import WhyUs from "@/components/whyus"
 import { TrendingNow } from "@/components/trendingnow"
+import { TestimonialsSection } from "@/components/testimonials-section"
+import HeroSlider from "@/components/hero-slider"
+import { ShopByPricing } from "@/components/ShopByPricing"
+import type { Product } from "@/lib/types"
+import { Truck, RefreshCcw, CreditCard, Clock } from "lucide-react"
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([])
-
-  const heroImages = [
-    "/Lehnga_ size 1.jpg",
-    "/kjhdfj.jpg",
-    "/dfhvzskdj.jpg",
-    "/hero-lehenga.jpg",
-    "/jhdujszj.jpg",
-  ]
 
   const categories = [
     { name: "All", image: "/Bridal/0bd77faf-fb9f-4966-9c81-2041ba25a1a9.jpeg" },
@@ -40,73 +36,68 @@ export default function HomePage() {
   ]
 
   useEffect(() => {
-    // ✅ Directly set initialProducts
     setProducts(initialProducts)
   }, [])
 
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    speed: 1000,
-    fade: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    pauseOnHover: false,
-  }
+  const shippingFeatures = [
+    { icon: <Truck className="w-5 h-5" />, text: "Free Shipping" },
+    { icon: <CreditCard className="w-5 h-5" />, text: "COD Available" },
+    { icon: <RefreshCcw className="w-5 h-5" />, text: "Easy Returns" },
+    { icon: <Clock className="w-5 h-5" />, text: "Express Delivery" },
+  ]
 
   return (
     <>
       <Navbar />
       <main>
         {/* Hero Section */}
-        <section className="relative h-[80vh] w-full overflow-hidden">
-          <Slider {...sliderSettings} className="absolute inset-0 z-0">
-            {heroImages.map((src, i) => (
-              <div key={i} className="relative w-full h-[90vh]">
-                <Image
-                  src={src}
-                  alt={`Lehenga ${i + 1}`}
-                  fill
-                  priority={i === 0}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
-          </Slider>
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-center px-4 z-10" />
-        </section>
+        <HeroSlider />
 
         {/* Shop by Occasion */}
-        <section className="py-12 bg-white">
+        <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-10 text-center">
               Shop by Occasion
             </h2>
-            <div className="flex gap-6 overflow-x-auto py-2 px-2 -mx-2 sm:justify-center sm:flex-wrap sm:overflow-visible scrollbar-none">
+            <div className="flex gap-5 overflow-x-auto px-2 -mx-2 sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 scrollbar-none">
               {categories.map((category) => (
                 <Link
                   key={category.name}
                   href={`/product?category=${category.name}`}
-                  className="flex-shrink-0 w-32 sm:w-28 flex flex-col items-center group relative transition-transform duration-300 hover:scale-105"
+                  className="flex-shrink-0 w-52 h-32 sm:w-auto sm:h-40 rounded-xl relative group overflow-hidden transition-all duration-500"
                 >
-                  <div className="w-28 h-28 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-gray-200 shadow-md bg-gray-50 relative">
+                  {/* Category Image */}
+                  <div className="absolute inset-0">
                     {category.image ? (
-                      <Image src={category.image} alt={category.name} fill className="object-cover" />
+                      <Image
+                        src={category.image}
+                        alt={category.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-700 font-semibold">All</div>
+                      <div className="flex items-center justify-center h-full bg-gray-100 text-gray-700 font-semibold">
+                        {category.name}
+                      </div>
                     )}
                   </div>
-                  <span className="mt-3 text-lg font-medium text-gray-800 text-center group-hover:text-primary transition-colors">
-                    {category.name}
-                  </span>
+
+                  {/* Gold Hover Border */}
+                  <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-yellow-500 transition-all duration-500" />
+
+                  {/* Title Overlay */}
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-all duration-500 flex items-center justify-center">
+                    <span className="text-white text-lg sm:text-xl font-semibold tracking-wide">
+                      {category.name}
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>
           </div>
         </section>
+
+        {/* Product & Collection Sections */}
         <NewArrivals products={products} />
         <OurCollection
           description="Explore our curated selection of lehengas for weddings, festivals, and special occasions."
@@ -114,40 +105,16 @@ export default function HomePage() {
           viewMoreLink="/product"
         />
 
-        
-        <section className="py-12 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-center text-gray-800 mb-4">
-              Women Suits Collection
-            </h2>
-            <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
-              Elegant and stylish suits designed for every occasion — from festive wear to casual elegance.
-            </p>
-
-            {products.filter((p) => p.category === "Suits").length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products
-                  .filter((p) => p.category === "Suits")
-                  .slice(0, 8)
-                  .map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-500">No suits available.</p>
-            )}
-
-            <div className="flex justify-center mt-10">
-              <Link
-                href="/product?category=Suits"
-                className="px-6 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-pink-700 transition"
-              >
-                View All Suits
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* Why Choose Us */}
         <WhyUs />
+
+        {/* Shop by Pricing */}
+        <ShopByPricing />
+
+        {/* Testimonials */}
+        <TestimonialsSection />
+
+        {/* Trending Products */}
         <TrendingNow products={products} viewMoreLink="/product" />
       </main>
       <Footer />

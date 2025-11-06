@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { ShoppingCart, Menu, X, User, Sparkles, Crown, Star } from "lucide-react"
+import { ShoppingCart, Menu, X, User, Sparkles, Crown, Star, ChevronRight } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 
 export function Navbar() {
@@ -12,7 +12,6 @@ export function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null)
   const [searchQuery, setSearchQuery] = useState("")
 
-  // Update cart count
   useEffect(() => {
     const updateCartCount = () => {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]")
@@ -28,7 +27,6 @@ export function Navbar() {
     }
   }, [])
 
-  // Close profile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
@@ -47,40 +45,48 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
-      {/* 🔸Top Offer Bar */}
-      <div className="bg-gradient-to-r from-pink-600 via-red-500 to-orange-500 text-white text-center py-2 text-xs sm:text-sm font-medium">
-        <div className="flex items-center justify-center space-x-4">
-          <span className="flex items-center"><Sparkles className="w-4 h-4 mr-1" /> Free Shipping Above ₹2000</span>
-          <span className="hidden sm:flex items-center"><Crown className="w-4 h-4 mr-1" /> Use Code: FREESHIP</span>
-          <span className="flex items-center"><Star className="w-4 h-4 mr-1" /> 24/7 Customer Support</span>
+    <nav className="sticky top-0 z-90 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* 🔸 Top Offer Bar */}
+      <div className="bg-primary text-primary-foreground text-center py-3 px-4 text-sm font-sans tracking-wide">
+        <div className="flex items-center justify-center gap-2 md:gap-6 flex-wrap">
+          <span className="flex items-center gap-1">
+            <ChevronRight className="w-4 h-4" />
+            FREE Delivery on orders above ₹5000
+          </span>
+          <span className="hidden sm:block w-1 h-1 bg-primary-foreground rounded-full"></span>
+          <span className="flex items-center gap-1">
+            <ChevronRight className="w-4 h-4" />
+            COD Available
+          </span>
+          <span className="hidden sm:block w-1 h-1 bg-primary-foreground rounded-full"></span>
+          <span className="flex items-center gap-1">
+            <ChevronRight className="w-4 h-4" />
+            WhatsApp Support 24/7
+          </span>
         </div>
       </div>
 
-      {/* 🔹Main Navbar */}
+      {/* 🔹 Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Lehenga Emporium" width={36} height={36} className="rounded-md object-cover" />
-          <span className="font-serif text-lg font-semibold text-gray-800">Lehenga Emporium</span>
-        </Link>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6">
+        {/* Left Menu */}
+        <div className="hidden md:flex items-center gap-6 flex-1">
           <Link href="/" className="text-gray-700 text-sm font-medium hover:text-pink-600 transition">Home</Link>
           <Link href="/product" className="text-gray-700 text-sm font-medium hover:text-pink-600 transition">All Lehengas</Link>
-          <Link
-            href="/product?category=Suits"
-            className="text-gray-700 text-sm font-medium hover:text-pink-600 transition"
-          >
-            Women Suits
+          <Link href="/product?category=Suits" className="text-gray-700 text-sm font-medium hover:text-pink-600 transition">Women Suits</Link>
+        </div>
+
+        
+        {/* Centered Logo */}
+        <Link href="/" className="flex-shrink-0">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-secondary tracking-wide">Bride & Lehenga</h1>
           </Link>
 
-
+        {/* Right Menu */}
+        <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
           <form onSubmit={handleSearch} className="relative w-64">
             <input
               type="text"
-              placeholder="Search lehengas, designer, party wear..."
+              placeholder="Search lehengas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-1.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
@@ -96,7 +102,6 @@ export function Navbar() {
             )}
           </Link>
 
-          {/* Profile Menu */}
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => setProfileOpen(!profileOpen)}
@@ -114,7 +119,7 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Button */}
+        {/* Mobile Menu Button */}
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-gray-700">
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -134,7 +139,7 @@ export function Navbar() {
           </form>
           <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-pink-600 transition">Home</Link>
           <Link href="/product" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-pink-600 transition">All Lehengas</Link>
-           <Link href="/product?category=Suits"className="text-gray-700 text-sm font-medium hover:text-pink-600 transition">Women Suits </Link>
+          <Link href="/product?category=Suits" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-pink-600 transition">Women Suits</Link>
           <Link href="/cart" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-pink-600 transition">
             <ShoppingCart className="w-5 h-5" /> Cart ({cartCount})
           </Link>
